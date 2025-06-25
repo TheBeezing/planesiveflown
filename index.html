@@ -6,13 +6,28 @@
     <link rel="icon" type="image/x-icon" href="plane.ico">
 
   </head>
-<body bgcolor="#b0c4de">
+<body bgcolor="#00ffff">
+<style>
+  body {
 
-    <h1>Planes I've flown<br></h1>
+    font-family: sans-serif;
+
+    height: 100vh;
+
+    background-image: url('coolbg.jpg'); 
+    background-repeat: no-repeat;
+    background-size: cover; <!--/* or 'contain' for full image without crop */-->
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style>
+
+
+    <center><h1>Planes I've flown<font size=1> in</font><br></h1>
     <h4>
       I am an aviation enthusiast or also known as an 'avgeek' (since
       November 2023). So I like to keep track of the planes that I have flown.
-    </h4>
+    </h4></center>
     <hr>
     <h2>Airlines</h2>
     <font color="#999999">
@@ -81,7 +96,8 @@
 	'MalaysiaAirlines.html',
 	'secret.html',
 	'NokAir.html',
-	'Etihad.html'
+	'Etihad.html',
+	'ThaiAirways.html'
   ];
 
   document.getElementById('dice-link').addEventListener('click', function(e) {
