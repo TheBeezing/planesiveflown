@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en"><head><script src="/_sdk/telemetry_sdk.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Avatar Maker</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    .shake { animation: shake 0.4s ease-in-out; }
+    @keyframes shake {
+      0%,100% { transform: rotate(0); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .ctrl-btn { transition: transform 0.1s; }
+    .ctrl-btn:active { transform: scale(0.9); }
+    .canva-card { transition: box-shadow 0.3s ease; box-shadow: none; }
+    .canva-card:hover { box-shadow: 4px 4px 0px #442831; }
+  </style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
+ </head>
+ <body data-template-id="__page-root" class="w-full min-h-screen px-4 pt-20 pb-10" style="background: rgb(251, 244, 131);">
+  <main class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8 items-start">
+   <div data-template-id="avatar-card" class="canva-card w-full rounded-2xl p-5 flex flex-col justify-between border-[3px] border-[#442831]" style="background: rgb(255, 255, 255);">
+    <header class="text-center">
+     <h1 data-template-id="avatar-title" class="canva-text" style="color: rgb(68, 40, 49); font-weight: 300; font-style: normal; font-size: 74px;">Avatar
+Generator</h1>
+     <p data-template-id="avatar-subtitle" class="canva-text mt-1 hidden sm:block" style="color: rgb(68, 40, 49); font-weight: 400; font-style: normal; font-size: 24px;">Create your team profile!</p>
+    </header>
+    <div class="flex flex-col items-center mt-8">
+     <div id="avatar-container" class="w-[280px] h-[280px] rounded-full overflow-hidden relative flex items-center justify-center border-[3px] border-[#442831]" style="background:#8db2ff;">
+      <svg id="avatar-svg" viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"></svg>
+     </div>
+     <div class="text-center mt-3">
+      <div id="display-name" class="font-bold text-lg" style="color:#1e1b4b;"></div>
+      <div id="display-role" class="text-sm" style="color:#6b7280;"></div>
+     </div>
+    </div>
+   </div>
+   <div data-template-id="controls-card" class="canva-card w-full rounded-2xl p-5 flex flex-col gap-3 justify-center border-[3px] border-[#442831]" style="background: rgb(255, 255, 255);"><!-- Head Type -->
+    <div class="flex items-center justify-between"><span data-template-id="head-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Head Shape</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('head',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="head-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('head',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Skin Tone -->
+    <div class="flex items-center justify-between"><span data-template-id="skin-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Skin Tone</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('skin',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="skin-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('skin',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Hair Style -->
+    <div class="flex items-center justify-between"><span data-template-id="hair-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Hair Style</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('hair',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="hair-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('hair',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Hair Color -->
+    <div class="flex items-center justify-between"><span data-template-id="haircolor-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Hair Color</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('hairColor',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="hairColor-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('hairColor',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Eyes -->
+    <div class="flex items-center justify-between"><span data-template-id="eyes-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Eyes</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('eyes',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="eyes-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('eyes',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Mouth -->
+    <div class="flex items-center justify-between"><span data-template-id="mouth-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Mouth</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('mouth',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="mouth-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('mouth',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Accessories -->
+    <div class="flex items-center justify-between"><span data-template-id="acc-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Accessories</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('acc',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button> <span id="acc-value" class="w-20 text-center text-sm font-medium"></span> <button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('acc',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div><!-- Background -->
+    <div class="flex items-center justify-between"><span data-template-id="bg-label" class="canva-text font-medium w-24" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Background</span>
+     <div class="flex items-center gap-2"><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('bg',-1)"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button>
+      <div class="w-20 flex justify-center">
+       <span id="bg-swatch" class="w-6 h-6 rounded-full border-2 border-white shadow"></span>
+      </div><button class="ctrl-btn w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" onclick="cycle('bg',1)"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+     </div>
+    </div>
+    <div class="border-t pt-3 mt-1 flex flex-col gap-3">
+     <div><label data-template-id="name-label" class="canva-text text-sm font-medium" for="name-input" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Your Name</label> <input id="name-input" type="text" maxlength="24" class="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm" placeholder="Enter your name" oninput="updateInfo()">
+     </div>
+     <div><label data-template-id="role-label" class="canva-text text-sm font-medium" for="role-input" style="color: rgb(68, 40, 49); font-weight: 500; font-style: normal; font-size: 14px;">Your Role</label> <input id="role-input" type="text" maxlength="30" class="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm" placeholder="Enter your role" oninput="updateInfo()">
+     </div>
+    </div>
+    <div class="mt-2"><button data-template-id="randomize-btn" class="canva-button w-full py-2.5 rounded-xl font-medium text-sm transition-colors duration-200 hover:bg-black" onclick="randomize()" style="background: rgb(68, 40, 49); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Randomize</button>
+    </div>
+   </div>
+  </main>
+  <script src="/_sdk/editing_sdk.js"></script>
+  <script>
+// Two head types, each with matched hair sets
+const HEAD_TYPES = ['Rounded', 'Angular'];
+
+const SKIN_COLORS = ['#FDDBB4','#F1C27D','#E0A370','#C68642','#8D5524','#5C3317'];
+const SKIN_NAMES = ['1','2','3','4','5','6'];
+
+const HAIR_COLOR_NAMES = ['Black','Brown','Blonde','Red','Gray','Blue','Pink'];
+const HAIR_COLORS = ['#1a1a2e','#6B4226','#E8D44D','#C0392B','#95A5A6','#3498DB','#FF69B4'];
+
+const EYE_NAMES = ['Round','Narrow','Almond','Happy','Wink','Lashes','Doe','Cool'];
+const MOUTH_NAMES = ['Smile','Grin','Open','Neutral','Smirk','Lipstick'];
+const ACC_NAMES = ['None','Round Glasses','Square Glasses','Sunglasses','Headband','Earrings','Hair Bow'];
+const BG_COLORS = ['#eca2ce','#d4a6ff','#8db2ff','#cfe773','#ffeb7f','#ffa376'];
+
+// Hair names per head type
+const HAIR_NAMES_A = ['Buzz','Crew Cut','Bob','Pixie','Side Part','Long Straight','Long Wavy','Long Curly','Braids','Ponytail','Space Buns','Mohawk','Bald'];
+const HAIR_NAMES_B = ['Buzz','Crew Cut','Bob','Pixie','Side Part','Long Straight','Long Wavy','Long Curly','Braids','Ponytail','Space Buns','Mohawk','Bald'];
+
+let state = { head:0, skin:0, hair:0, hairColor:1, eyes:0, mouth:0, acc:0, bg:2 };
+
+function getHairNames(){ return state.head===0 ? HAIR_NAMES_A : HAIR_NAMES_B; }
+function getLen(key){
+  if(key==='head') return HEAD_TYPES.length;
+  if(key==='skin') return SKIN_COLORS.length;
+  if(key==='hair') return getHairNames().length;
+  if(key==='hairColor') return HAIR_COLORS.length;
+  if(key==='eyes') return EYE_NAMES.length;
+  if(key==='mouth') return MOUTH_NAMES.length;
+  if(key==='acc') return ACC_NAMES.length;
+  if(key==='bg') return BG_COLORS.length;
+  return 1;
+}
+
+function cycle(key, dir){
+  if(key==='head'){
+    state.head = (state.head + dir + HEAD_TYPES.length) % HEAD_TYPES.length;
+    // hair index is preserved when switching head types
+  } else {
+    const len = getLen(key);
+    state[key] = (state[key] + dir + len) % len;
+  }
+  updateLabels(); renderAvatar();
+}
+
+function updateLabels(){
+  document.getElementById('head-value').textContent = HEAD_TYPES[state.head];
+  document.getElementById('skin-value').textContent = SKIN_NAMES[state.skin];
+  document.getElementById('hair-value').textContent = getHairNames()[state.hair];
+  document.getElementById('hairColor-value').textContent = HAIR_COLOR_NAMES[state.hairColor];
+  document.getElementById('eyes-value').textContent = EYE_NAMES[state.eyes];
+  document.getElementById('mouth-value').textContent = MOUTH_NAMES[state.mouth];
+  document.getElementById('acc-value').textContent = ACC_NAMES[state.acc];
+  document.getElementById('bg-swatch').style.background = BG_COLORS[state.bg];
+}
+
+function updateInfo(){
+  document.getElementById('display-name').textContent = document.getElementById('name-input').value;
+  document.getElementById('display-role').textContent = document.getElementById('role-input').value;
+}
+
+// --- SVG Drawing ---
+
+function drawHead(type, sc){
+  if(type === 0){ // Rounded
+    return `<ellipse cx="100" cy="112" rx="58" ry="60" fill="${sc}"/>` +
+           `<ellipse cx="42" cy="110" rx="10" ry="14" fill="${sc}"/>` +
+           `<ellipse cx="158" cy="110" rx="10" ry="14" fill="${sc}"/>`;
+  } else { // Angular
+    return `<path d="M52 80 Q52 52 75 48 L125 48 Q148 52 148 80 L148 120 Q148 155 125 165 L100 172 L75 165 Q52 155 52 120 Z" fill="${sc}"/>` +
+           `<rect x="42" y="98" width="12" height="22" rx="6" fill="${sc}"/>` +
+           `<rect x="146" y="98" width="12" height="22" rx="6" fill="${sc}"/>`;
+  }
+}
+
+function drawEyes(i){
+  const brows = `<line x1="68" y1="92" x2="88" y2="90" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round"/>` +
+                `<line x1="112" y1="90" x2="132" y2="92" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round"/>`;
+  const pairs = [
+    // 0 Round
+    `<circle cx="78" cy="105" r="7" fill="white"/><circle cx="78" cy="105" r="4" fill="#1a1a2e"/><circle cx="122" cy="105" r="7" fill="white"/><circle cx="122" cy="105" r="4" fill="#1a1a2e"/>`,
+    // 1 Narrow
+    `<ellipse cx="78" cy="105" rx="8" ry="4" fill="white"/><circle cx="78" cy="105" r="3" fill="#1a1a2e"/><ellipse cx="122" cy="105" rx="8" ry="4" fill="white"/><circle cx="122" cy="105" r="3" fill="#1a1a2e"/>`,
+    // 2 Almond
+    `<path d="M70 105 Q78 96 86 105 Q78 110 70 105Z" fill="white"/><circle cx="78" cy="104" r="3.5" fill="#1a1a2e"/><path d="M114 105 Q122 96 130 105 Q122 110 114 105Z" fill="white"/><circle cx="122" cy="104" r="3.5" fill="#1a1a2e"/>`,
+    // 3 Happy Closed
+    `<path d="M71 105 Q78 98 85 105" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M115 105 Q122 98 129 105" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+    // 4 Wink
+    `<circle cx="78" cy="105" r="7" fill="white"/><circle cx="78" cy="105" r="4" fill="#1a1a2e"/><path d="M115 105 Q122 99 129 105" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+    // 5 Lashes
+    `<circle cx="78" cy="105" r="7" fill="white"/><circle cx="78" cy="105" r="4" fill="#1a1a2e"/><circle cx="122" cy="105" r="7" fill="white"/><circle cx="122" cy="105" r="4" fill="#1a1a2e"/><line x1="72" y1="99" x2="69" y2="94" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/><line x1="78" y1="98" x2="78" y2="93" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/><line x1="84" y1="99" x2="87" y2="94" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/><line x1="116" y1="99" x2="113" y2="94" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/><line x1="122" y1="98" x2="122" y2="93" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/><line x1="128" y1="99" x2="131" y2="94" stroke="#1a1a2e" stroke-width="1.5" stroke-linecap="round"/>`,
+    // 6 Doe
+    `<circle cx="78" cy="105" r="9" fill="white"/><circle cx="80" cy="105" r="5" fill="#1a1a2e"/><circle cx="82" cy="102" r="1.5" fill="white"/><circle cx="122" cy="105" r="9" fill="white"/><circle cx="124" cy="105" r="5" fill="#1a1a2e"/><circle cx="126" cy="102" r="1.5" fill="white"/>`,
+    // 7 Cool
+    `<circle cx="78" cy="105" r="3" fill="#1a1a2e"/><circle cx="122" cy="105" r="3" fill="#1a1a2e"/>`
+  ];
+  return brows + pairs[i];
+}
+
+function drawMouth(i){
+  return [
+    `<path d="M85 132 Q100 146 115 132" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+    `<path d="M82 130 Q100 150 118 130" fill="white" stroke="#1a1a2e" stroke-width="2"/>`,
+    `<ellipse cx="100" cy="135" rx="10" ry="8" fill="#1a1a2e"/><ellipse cx="100" cy="133" rx="8" ry="4" fill="white"/>`,
+    `<line x1="87" y1="134" x2="113" y2="134" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round"/>`,
+    `<path d="M85 132 Q100 140 115 128" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+    // 5 Lipstick
+    `<path d="M84 130 Q100 144 116 130" fill="#e74c3c" stroke="#c0392b" stroke-width="1.5"/>`
+  ][i];
+}
+
+function drawAcc(i, headType){
+  const accList = [
+    '', // None
+    // 1 Round Glasses
+    `<circle cx="78" cy="105" r="14" fill="none" stroke="#1a1a2e" stroke-width="2.5"/><circle cx="122" cy="105" r="14" fill="none" stroke="#1a1a2e" stroke-width="2.5"/><line x1="92" y1="105" x2="108" y2="105" stroke="#1a1a2e" stroke-width="2"/><line x1="64" y1="103" x2="50" y2="100" stroke="#1a1a2e" stroke-width="2"/><line x1="136" y1="103" x2="150" y2="100" stroke="#1a1a2e" stroke-width="2"/>`,
+    // 2 Square Glasses
+    `<rect x="64" y="95" width="28" height="20" rx="3" fill="none" stroke="#1a1a2e" stroke-width="2.5"/><rect x="108" y="95" width="28" height="20" rx="3" fill="none" stroke="#1a1a2e" stroke-width="2.5"/><line x1="92" y1="105" x2="108" y2="105" stroke="#1a1a2e" stroke-width="2"/><line x1="64" y1="103" x2="50" y2="100" stroke="#1a1a2e" stroke-width="2"/><line x1="136" y1="103" x2="150" y2="100" stroke="#1a1a2e" stroke-width="2"/>`,
+    // 3 Sunglasses
+    `<path d="M62 98 Q78 92 92 98 L92 112 Q78 118 62 112 Z" fill="#1a1a2e"/><path d="M108 98 Q122 92 138 98 L138 112 Q122 118 108 112 Z" fill="#1a1a2e"/><line x1="92" y1="105" x2="108" y2="105" stroke="#1a1a2e" stroke-width="2.5"/><line x1="62" y1="103" x2="48" y2="100" stroke="#1a1a2e" stroke-width="2.5"/><line x1="138" y1="103" x2="152" y2="100" stroke="#1a1a2e" stroke-width="2.5"/>`,
+    // 4 Headband
+    `<path d="M48 82 Q100 68 152 82" stroke="#e74c3c" stroke-width="6" fill="none" stroke-linecap="round"/>`,
+    // 5 Earrings (dedicated SVG sets per head shape)
+    headType === 0 ? 
+      `<circle cx="42" cy="128" r="4" fill="#FFD700" stroke="#DAA520" stroke-width="1"/><circle cx="158" cy="128" r="4" fill="#FFD700" stroke="#DAA520" stroke-width="1"/><line x1="42" y1="120" x2="42" y2="124" stroke="#DAA520" stroke-width="1.5"/><line x1="158" y1="120" x2="158" y2="124" stroke="#DAA520" stroke-width="1.5"/>` :
+      `<circle cx="45" cy="118" r="4" fill="#FFD700" stroke="#DAA520" stroke-width="1"/><circle cx="155" cy="118" r="4" fill="#FFD700" stroke="#DAA520" stroke-width="1"/><line x1="45" y1="110" x2="45" y2="114" stroke="#DAA520" stroke-width="1.5"/><line x1="155" y1="110" x2="155" y2="114" stroke="#DAA520" stroke-width="1.5"/>`,
+    // 6 Hair Bow
+    `<path d="M100 42 Q88 32 82 40 Q88 46 100 42Z" fill="#e74c3c"/><path d="M100 42 Q112 32 118 40 Q112 46 100 42Z" fill="#e74c3c"/><circle cx="100" cy="42" r="3" fill="#c0392b"/>`
+  ];
+  return accList[i];
+}
+
+// Hair drawing per head type (type 0 = Rounded, type 1 = Angular)
+function drawHairA(i, c){
+  // Rounded head: cx=100 cy=112, rx=58 ry=60
+  return [
+    // 0 Buzz
+    `<path d="M58 92 Q56 60 100 48 Q144 60 142 92 L142 85 Q140 62 100 52 Q60 62 58 85 Z" fill="${c}" opacity="0.65"/>`,
+    // 1 Crew Cut
+    `<path d="M52 90 Q50 55 100 48 Q150 55 148 90 L145 82 Q140 62 100 54 Q60 62 55 82 Z" fill="${c}"/>`,
+    // 2 Bob
+    `<path d="M48 85 Q46 52 100 44 Q154 52 152 85 L155 130 Q150 140 140 138 L140 90 Q138 62 100 54 Q62 62 60 90 L60 138 Q50 140 45 130 Z" fill="${c}"/>`,
+    // 3 Pixie
+    `<path d="M56 90 Q54 56 100 46 Q146 56 144 90 L140 78 Q135 62 100 54 Q70 62 65 78 Z" fill="${c}"/><path d="M55 80 Q40 65 38 55 Q50 60 60 70 Z" fill="${c}"/>`,
+    // 4 Side Part
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><path d="M48 88 Q45 105 48 120 Q52 108 54 88 Z" fill="${c}"/><path d="M85 40 L88 42" stroke="${c}" stroke-width="2"/>`,
+    // 5 Long Straight
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><path d="M50 88 Q46 100 44 140 Q48 160 56 175 Q58 160 56 88 Z" fill="${c}"/><path d="M150 88 Q154 100 156 140 Q152 160 144 175 Q142 160 144 88 Z" fill="${c}"/>`,
+    // 6 Long Wavy
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><path d="M50 88 Q46 110 48 135 Q54 150 48 175 Q54 160 58 135 Q62 110 56 88 Z" fill="${c}"/><path d="M150 88 Q154 110 152 135 Q146 150 152 175 Q146 160 142 135 Q138 110 144 88 Z" fill="${c}"/>`,
+    // 7 Long Curly
+    `<circle cx="60" cy="68" r="16" fill="${c}"/><circle cx="85" cy="55" r="16" fill="${c}"/><circle cx="115" cy="55" r="16" fill="${c}"/><circle cx="140" cy="68" r="16" fill="${c}"/><circle cx="44" cy="85" r="15" fill="${c}"/><circle cx="156" cy="85" r="15" fill="${c}"/><circle cx="44" cy="112" r="13" fill="${c}"/><circle cx="156" cy="112" r="13" fill="${c}"/><circle cx="46" cy="138" r="12" fill="${c}"/><circle cx="154" cy="138" r="12" fill="${c}"/>`,
+    // 8 Braids
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><path d="M50 82 Q48 120 50 150 Q52 160 56 150 Q58 120 56 82 Z" fill="${c}"/><circle cx="53" cy="158" r="5" fill="${c}"/><path d="M150 82 Q152 120 150 150 Q148 160 144 150 Q142 120 144 82 Z" fill="${c}"/><circle cx="147" cy="158" r="5" fill="${c}"/>`,
+    // 9 Ponytail
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><ellipse cx="100" cy="38" rx="10" ry="8" fill="${c}"/><path d="M100 38 Q108 20 103 5 Q100 13 97 5 Q92 20 100 38" fill="${c}"/>`,
+    // 10 Space Buns
+    `<path d="M50 88 Q48 52 100 44 Q152 52 150 88" fill="${c}"/><circle cx="58" cy="65" r="18" fill="${c}"/><circle cx="142" cy="65" r="18" fill="${c}"/>`,
+    // 11 Mohawk
+    `<path d="M88 52 Q92 10 100 5 Q108 10 112 52" fill="${c}"/><path d="M90 60 Q95 30 100 25 Q105 30 110 60" fill="${c}"/>`,
+    // 12 Bald
+    ``
+  ][i];
+}
+
+function drawHairB(i, c){
+  // Angular head: top at y=48, sides at x=52/148
+  return [
+    // 0 Buzz
+    `<path d="M56 80 Q56 52 100 42 Q144 52 144 80 L142 74 Q140 58 100 48 Q60 58 58 74 Z" fill="${c}" opacity="0.65"/>`,
+    // 1 Crew Cut
+    `<path d="M52 80 Q52 48 100 38 Q148 48 148 80 L145 72 Q142 56 100 46 Q58 56 55 72 Z" fill="${c}"/>`,
+    // 2 Bob
+    `<path d="M48 76 Q48 44 100 34 Q152 44 152 76 L152 125 Q148 135 138 132 L138 82 Q136 56 100 46 Q64 56 62 82 L62 132 Q52 135 48 125 Z" fill="${c}"/>`,
+    // 3 Pixie
+    `<path d="M55 78 Q55 46 100 37 Q145 46 145 78 L142 70 Q138 54 100 46 Q68 54 62 70 Z" fill="${c}"/><path d="M55 72 Q40 58 36 48 Q50 52 60 64 Z" fill="${c}"/>`,
+    // 4 Side Part
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><path d="M50 78 Q47 98 50 115 Q54 100 54 78 Z" fill="${c}"/>`,
+    // 5 Long Straight
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><path d="M50 78 Q46 90 44 130 Q48 150 56 172 Q56 150 56 78 Z" fill="${c}"/><path d="M150 78 Q154 90 156 130 Q152 150 144 172 Q144 150 144 78 Z" fill="${c}"/>`,
+    // 6 Long Wavy
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><path d="M50 78 Q46 100 48 130 Q54 145 48 172 Q54 150 60 130 Q64 100 56 78 Z" fill="${c}"/><path d="M150 78 Q154 100 152 130 Q146 145 152 172 Q146 150 140 130 Q136 100 144 78 Z" fill="${c}"/>`,
+    // 7 Long Curly
+    `<circle cx="62" cy="60" r="16" fill="${c}"/><circle cx="85" cy="48" r="16" fill="${c}"/><circle cx="115" cy="48" r="16" fill="${c}"/><circle cx="138" cy="60" r="16" fill="${c}"/><circle cx="44" cy="75" r="15" fill="${c}"/><circle cx="156" cy="75" r="15" fill="${c}"/><circle cx="44" cy="102" r="13" fill="${c}"/><circle cx="156" cy="102" r="13" fill="${c}"/><circle cx="46" cy="128" r="12" fill="${c}"/><circle cx="154" cy="128" r="12" fill="${c}"/>`,
+    // 8 Braids
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><path d="M50 72 Q48 112 50 145 Q52 155 56 145 Q58 112 56 72 Z" fill="${c}"/><circle cx="53" cy="152" r="5" fill="${c}"/><path d="M150 72 Q152 112 150 145 Q148 155 144 145 Q142 112 144 72 Z" fill="${c}"/><circle cx="147" cy="152" r="5" fill="${c}"/>`,
+    // 9 Ponytail
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><ellipse cx="100" cy="32" rx="10" ry="8" fill="${c}"/><path d="M100 32 Q108 14 103 2 Q100 10 97 2 Q92 14 100 32" fill="${c}"/>`,
+    // 10 Space Buns
+    `<path d="M50 78 Q50 44 100 34 Q150 44 150 78" fill="${c}"/><circle cx="58" cy="56" r="18" fill="${c}"/><circle cx="142" cy="56" r="18" fill="${c}"/>`,
+    // 11 Mohawk
+    `<path d="M88 48 Q92 8 100 2 Q108 8 112 48" fill="${c}"/><path d="M90 55 Q95 25 100 20 Q105 25 110 55" fill="${c}"/>`,
+    // 12 Bald
+    ``
+  ][i];
+}
+
+function renderAvatar(){
+  const svg = document.getElementById('avatar-svg');
+  const sc = SKIN_COLORS[state.skin];
+  const hc = HAIR_COLORS[state.hairColor];
+  document.getElementById('avatar-container').style.background = BG_COLORS[state.bg];
+
+  let s = '';
+  s += drawHead(state.head, sc);
+  s += drawEyes(state.eyes);
+  s += drawMouth(state.mouth);
+  s += (state.head === 0 ? drawHairA : drawHairB)(state.hair, hc);
+  s += drawAcc(state.acc, state.head);
+  svg.innerHTML = s;
+}
+
+function randomizeState(){
+  state.head = Math.floor(Math.random() * HEAD_TYPES.length);
+  state.skin = Math.floor(Math.random() * SKIN_COLORS.length);
+  state.hair = Math.floor(Math.random() * getHairNames().length);
+  state.hairColor = Math.floor(Math.random() * HAIR_COLORS.length);
+  state.eyes = Math.floor(Math.random() * EYE_NAMES.length);
+  state.mouth = Math.floor(Math.random() * MOUTH_NAMES.length);
+  state.acc = Math.floor(Math.random() * ACC_NAMES.length);
+  state.bg = Math.floor(Math.random() * BG_COLORS.length);
+}
+
+function randomize(){
+  const c = document.getElementById('avatar-container');
+  c.classList.add('shake');
+  setTimeout(() => c.classList.remove('shake'), 400);
+  randomizeState();
+  updateLabels();
+  renderAvatar();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  randomizeState();
+  updateLabels();
+  renderAvatar();
+});
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0decf98427633b6',t:'MTc4MTgzMzA3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body></html>
